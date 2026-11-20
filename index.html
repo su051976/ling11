@@ -1,0 +1,1196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>what survives?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+Telugu:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #1f4a36;
+    --forest-deep: #12301f;
+    --forest-mid: #2b5e46;
+    --mustard: #d9a441;
+    --redorange: #c8542b;
+    --cream: #f6eedc;
+    --cream-dim: #cfc7ae;
+    --gold-rule: rgba(217, 164, 65, 0.55);
+    --serif: "Fraunces", Georgia, "Times New Roman", serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    --telugu: "Noto Sans Telugu", "Nirmala UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--forest-deep); color: var(--cream); }
+  body { font-family: var(--serif); font-size: 18px; line-height: 1.55; min-height: 100vh; }
+  [lang="te"] { font-family: var(--telugu); }
+  a { color: var(--mustard); }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--mustard); outline-offset: 3px; }
+  main:focus { outline: none; }
+  .mono { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cream-dim); }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* ---------- top strip + nav ---------- */
+  .strip {
+    display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; align-items: center; justify-content: space-between;
+    padding: 0.6rem 1.25rem; background: var(--forest-deep); border-bottom: 1px solid var(--gold-rule);
+  }
+  .lang-switch { display: flex; gap: 0.25rem; align-items: center; flex-wrap: wrap; }
+  .lang-switch button {
+    font: inherit; font-family: var(--mono); font-size: 0.78rem; background: none; color: var(--cream-dim);
+    border: 1px solid transparent; padding: 0.2rem 0.5rem; cursor: pointer; border-radius: 2px;
+  }
+  .lang-switch button[aria-pressed="true"] { color: var(--forest-deep); background: var(--mustard); }
+  .lang-switch .label { margin-right: 0.5rem; }
+  header.site {
+    display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; align-items: baseline; justify-content: space-between;
+    padding: 1rem 1.25rem; background: var(--forest);
+  }
+  .site-title { font-family: var(--serif); font-size: 1.6rem; font-weight: 500; color: var(--cream); text-decoration: none; }
+  .site-title .survives { color: var(--mustard); }
+  nav.main ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; margin: 0; padding: 0; }
+  nav.main a { color: var(--cream); text-decoration: none; font-family: var(--mono); font-size: 0.8rem; }
+  nav.main a[aria-current="page"] { color: var(--mustard); border-bottom: 1px solid var(--mustard); }
+  .circle-toggle {
+    font: inherit; font-family: var(--mono); font-size: 0.78rem; background: none; color: var(--cream);
+    border: 1px solid var(--gold-rule); border-radius: 999px; padding: 0.25rem 0.75rem; cursor: pointer;
+  }
+  .circle-menu { display: none; padding: 1rem 1.25rem; background: var(--forest-mid); border-bottom: 1px solid var(--gold-rule); }
+  .circle-menu.open { display: block; }
+  .circle-menu ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; }
+  .circle-menu a { color: var(--cream); font-size: 0.95rem; }
+
+  main { max-width: 980px; margin: 0 auto; padding: 2.25rem 1.25rem 4rem; }
+  h1, h2, h3 { font-family: var(--serif); font-weight: 300; line-height: 1.15; margin: 0 0 0.6rem; }
+  h1 { font-size: clamp(2.2rem, 6vw, 4rem); }
+  h2 { font-size: clamp(1.6rem, 3.5vw, 2.3rem); }
+  h3 { font-size: 1.3rem; font-weight: 500; }
+  p { margin: 0 0 1rem; max-width: 66ch; }
+  .sub { color: var(--mustard); font-style: italic; }
+  .small { font-size: 0.9rem; color: var(--cream-dim); }
+
+  /* ---------- landing ---------- */
+  .landing { padding-top: 1rem; }
+  .landing .big-word { position: relative; margin: 2rem 0 1rem; min-height: 280px; display: grid; place-items: center; }
+  .mustard-shape {
+    position: absolute; inset: 0; margin: auto; width: min(560px, 100%); height: 260px;
+    background: var(--mustard); border-radius: 58% 42% 49% 51% / 52% 60% 40% 48%; opacity: 0.94; transform: rotate(-3deg);
+  }
+  .landing .big-word .word {
+    position: relative; font-size: clamp(3.4rem, 10vw, 6.5rem); color: var(--forest-deep); font-weight: 500;
+    z-index: 1; text-align: center; padding: 0 1rem;
+  }
+  .landing .big-word .word[lang="te"] { font-size: clamp(2.8rem, 8vw, 5rem); }
+  .meta-line { display: flex; flex-wrap: wrap; gap: 0.5rem 1.2rem; align-items: center; margin-top: 0.8rem; }
+  .play {
+    font: inherit; font-family: var(--mono); font-size: 0.9rem; background: var(--mustard); color: var(--forest-deep);
+    border: 0; padding: 0.6rem 1.1rem; cursor: pointer; border-radius: 2px;
+  }
+  .play[disabled] { opacity: 0.55; cursor: default; }
+  .reveal-english { min-height: 2.5rem; margin-top: 1.25rem; color: var(--cream); font-size: 1.25rem; }
+  .reveal-english.hidden { visibility: hidden; }
+  .pending-note { color: var(--cream-dim); font-family: var(--mono); font-size: 0.8rem; }
+  .blurb { margin-top: 2rem; font-size: 1.05rem; }
+  .enter { display: inline-block; margin-top: 1.25rem; font-family: var(--mono); font-size: 0.9rem; }
+
+  /* ---------- index: non-overlapping floating words ---------- */
+  .index-head { margin-bottom: 1.25rem; }
+  .float-field { position: relative; width: 100%; height: 560px; }
+  .float-word {
+    position: absolute; top: 0; left: 0; white-space: nowrap; color: var(--cream); text-decoration: none;
+    font-family: var(--serif); font-size: clamp(1.1rem, 2.6vw, 1.7rem); line-height: 1.2;
+    transition: color 0.2s ease;
+  }
+  .float-word.proverb { font-size: clamp(0.95rem, 2vw, 1.25rem); font-style: italic; }
+  .float-word:hover, .float-word:focus-visible { color: var(--mustard); }
+  .float-word .eng {
+    display: none; position: absolute; left: 0; top: 100%; margin-top: 2px; font-size: 0.78rem; font-family: var(--mono);
+    color: var(--cream); background: var(--forest-deep); border: 1px solid var(--gold-rule); padding: 0.1rem 0.4rem; white-space: nowrap; z-index: 5;
+  }
+  .float-word:hover .eng, .float-word:focus-visible .eng { display: block; }
+  .room-label { position: absolute; font-family: var(--mono); font-size: 0.72rem; color: var(--cream-dim); letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; }
+  .list-view { display: none; }
+  .list-view.show { display: block; }
+  .list-view ol { padding-left: 1.4rem; }
+  .list-view li { margin-bottom: 0.4rem; }
+  .list-view-toggle { margin-bottom: 1rem; font: inherit; font-family: var(--mono); font-size: 0.8rem; background: none; color: var(--mustard); border: 1px solid var(--gold-rule); padding: 0.3rem 0.7rem; cursor: pointer; }
+
+  /* ---------- term & proverb pages ---------- */
+  .term-head { margin-bottom: 1.5rem; }
+  .term-head .form-big { font-family: var(--serif); font-size: clamp(2.4rem, 7vw, 4.2rem); font-weight: 300; margin: 0.2rem 0; }
+  .term-head .form-big[lang="te"] { font-family: var(--telugu); font-size: clamp(2.1rem, 6vw, 3.6rem); }
+  .section { display: grid; grid-template-columns: 180px 1fr; gap: 0.5rem 1.5rem; padding: 1.4rem 0; border-top: 1px solid var(--gold-rule); }
+  .section .label { font-family: var(--mono); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--mustard); padding-top: 0.25rem; }
+  .section .body { min-width: 0; }
+  @media (max-width: 680px) { .section { grid-template-columns: 1fr; } }
+  .transcript { font-family: var(--mono); font-size: 0.95rem; color: var(--cream); margin: 0.5rem 0; }
+  .tone-legend { font-family: var(--mono); font-size: 0.8rem; color: var(--cream-dim); }
+  .side-by-side { display: grid; gap: 0.6rem; }
+  .side-by-side .line { margin: 0; }
+  .side-by-side .script { font-size: 1.2rem; }
+  .side-by-side .gloss { color: var(--cream-dim); font-size: 0.95rem; }
+  .rendering-box { margin: 0.5rem 0; padding: 1.2rem; min-height: 120px; border: 1px dashed var(--gold-rule); color: var(--cream-dim); font-size: 0.95rem; display: grid; gap: 0.7rem; align-content: start; }
+  .swatches { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .swatch { width: 64px; height: 44px; border-radius: 2px; display: grid; place-items: end start; padding: 0.2rem; font-family: var(--mono); font-size: 0.65rem; color: var(--forest-deep); }
+  .three-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+  @media (max-width: 720px) { .three-cols { grid-template-columns: 1fr; } }
+  .three-cols .col { border-left: 1px solid var(--gold-rule); padding-left: 0.8rem; }
+  .scale-mark { display: inline-block; font-family: var(--mono); font-size: 0.85rem; padding: 0.2rem 0.5rem; border: 1px solid var(--gold-rule); color: var(--cream); text-decoration: none; }
+  .zone-kept { background: rgba(120, 190, 130, 0.2); }
+  .zone-flattened { background: rgba(217, 164, 65, 0.22); }
+  .zone-lost { background: rgba(200, 84, 43, 0.25); }
+  .next-prev { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2rem; font-family: var(--mono); font-size: 0.85rem; flex-wrap: wrap; }
+  .widest-gap { color: var(--cream); }
+  .social-panel { border-left: 2px solid var(--redorange); padding-left: 0.9rem; color: var(--cream-dim); }
+  audio { width: 100%; max-width: 420px; margin: 0.3rem 0; }
+
+  /* outside works */
+  ul.works { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.6rem; }
+  ul.works li { border-left: 2px solid var(--mustard); padding-left: 1rem; }
+  .work-kind { margin-bottom: 0.2rem; }
+  .work-title { margin: 0 0 0.3rem; font-size: 1.05rem; }
+  .work-why { color: var(--cream-dim); font-size: 0.95rem; margin-bottom: 0.6rem; }
+  .work-fig { margin: 0.5rem 0; max-width: 520px; }
+  .work-fig img { display: block; width: 100%; height: auto; max-height: 440px; object-fit: contain; background: var(--cream); padding: 0.4rem; }
+  .work-fig figcaption { margin-top: 0.4rem; }
+  .video { position: relative; width: 100%; aspect-ratio: 16 / 9; max-width: 640px; margin: 0.5rem 0; }
+  .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+  /* ---------- scale ---------- */
+  .scale-wash { border-radius: 4px; padding: 1.4rem; margin: 1.2rem 0; }
+  .scale-wash.zone-kept { background: rgba(120, 190, 130, 0.2); }
+  .scale-wash.zone-flattened { background: rgba(217, 164, 65, 0.22); }
+  .scale-wash.zone-lost { background: rgba(200, 84, 43, 0.25); }
+  .scale-wash h3 { margin-bottom: 0.3rem; }
+  .scale-words { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
+  .scale-words a { color: var(--cream); font-family: var(--mono); font-size: 0.85rem; text-decoration: none; border-bottom: 1px solid var(--gold-rule); }
+  table.plain { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+  table.plain th, table.plain td { text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--gold-rule); vertical-align: top; font-size: 0.95rem; }
+  table.plain th { font-family: var(--mono); font-size: 0.75rem; text-transform: uppercase; color: var(--mustard); font-weight: 400; }
+
+  /* ---------- references / about ---------- */
+  .quote { font-size: 1.5rem; font-style: italic; border-left: 3px solid var(--mustard); padding-left: 1rem; margin: 1.5rem 0; color: var(--cream); }
+  ul.refs { padding-left: 1.2rem; }
+  ul.refs li { margin-bottom: 0.7rem; }
+  .palette-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0.6rem 0 1rem; }
+  .palette-row div { padding: 0.8rem 1rem; min-width: 150px; font-family: var(--mono); font-size: 0.8rem; color: var(--forest-deep); }
+  h2.sub-h { margin-top: 2rem; font-size: 1.4rem; }
+
+  footer.site-foot { border-top: 1px solid var(--gold-rule); padding: 1.2rem; text-align: center; font-family: var(--mono); font-size: 0.75rem; color: var(--cream-dim); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="strip">
+  <div class="lang-switch" role="group" aria-label="Interface language">
+    <span class="label mono" id="lang-label">LANGUAGE</span>
+    <button type="button" data-lang="en" aria-pressed="true">English</button>
+    <button type="button" data-lang="yo" aria-pressed="false" lang="yo">Yorùbá</button>
+    <button type="button" data-lang="te" aria-pressed="false" lang="te">తెలుగు</button>
+  </div>
+  <button type="button" class="circle-toggle" id="circle-toggle" aria-expanded="false" aria-controls="circle-menu">all words</button>
+</div>
+<div class="circle-menu" id="circle-menu">
+  <ul id="circle-list"></ul>
+</div>
+
+<header class="site">
+  <a class="site-title" href="#/" id="home-link"><span class="survives">what survives?</span></a>
+  <nav class="main" aria-label="Main">
+    <ul>
+      <li><a href="#/index" data-nav="index">the index</a></li>
+      <li><a href="#/scale" data-nav="scale">the scale</a></li>
+      <li><a href="#/references" data-nav="references">references</a></li>
+      <li><a href="#/about" data-nav="about">about</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="app" tabindex="-1"></main>
+
+<footer class="site-foot">what survives? · a digital hub, not a dictionary</footer>
+
+<script>
+/* =========================================================
+   INTERFACE STRINGS
+   Yorùbá and Telugu entries are drafts from the project plan.
+   Any string without a translation falls back to English and
+   is marked lang="en".
+   ========================================================= */
+const UI = {
+  en: {
+    index: "the index", scale: "the scale", references: "references", about: "about",
+    listen: "Listen first. The translation comes after.",
+    play: "play the word", playing: "playing…", pending: "recording pending",
+    backIndex: "back to the index", wander: "Wander!", listView: "list view", floatView: "floating view",
+    rooms: { body: "Body", water: "Water", food: "Food", joy: "Joy", open: "Open", sayings: "sayings" },
+    randomTerm: "random term", enterIndex: "enter the index",
+    landingBlurb: "Nine words and four proverbs from Yorùbá and Telugu. You hear each one before you read about it.",
+    sections: ["listen", "the English equivalent", "what the English omits", "outside works, with reasons", "speaker", "side by side", "loss note", "non-verbal rendering", "three columns", "scale placement", "sources"],
+    toneLegend: "acute = High, grave = Low, unmarked = Mid (Lotven & Ajibade 2024, p. 58)",
+    scaleIntro: "The scale measures how much of a word survives its move into English. It is my own tool, not a standard one.",
+    scaleNote: "The native speaker's judgment has the final word. If a speaker disagrees with my placement, the placement changes.",
+    zones: { kept: "kept", flattened: "flattened", lost: "lost" },
+    zoneRule: { kept: "no failures", flattened: "one failure", lost: "two or more failures" },
+    referencesIntro: "Every text cited on the site, and every outside work with its record link.",
+    aboutQuote: "“You cannot just describe it, you have to see it.”",
+    methodIntro: "How the project was made, and its limits.",
+    notEmbedded: "Not embedded: this work is in copyright, so the site links its record only.",
+    noEmbed: "No media embedded yet.",
+    proverbLiteral: "Literal translation", proverbIntended: "Intended meaning",
+    socialHdr: "Social knowledge", widestGap: "Widest gap",
+    nonverbalNote: "my attempt. Reviewed by a native speaker.",
+    prevNext: ["← previous", "next →"]
+  },
+  yo: {
+    index: "àtòjọ", scale: "ìwọ̀n", references: "àwọn orísun", about: "nípa iṣẹ́ yìí",
+    listen: "Gbọ́ kọ́kọ́. Ìtumọ̀ ń bọ̀ lẹ́yìn.",
+    play: "gbọ́ ọ̀rọ̀ náà"
+  },
+  te: {
+    index: "సూచిక", scale: "కొలమానం", references: "మూలాలు", about: "ఈ ప్రాజెక్ట్ గురించి",
+    listen: "ముందు వినండి. అర్థం తర్వాత.",
+    play: "పదాన్ని వినండి"
+  }
+};
+
+/* Speakers (credited on every entry). */
+const SPEAKERS = {
+  yo: "Ayomade Adeolu-Akande",
+  te: "Deepthi Medikondla"
+};
+
+/* Telugu dictionary cited for Telugu glosses. */
+const BROWN = {
+  t: "Brown, C. P. (1852; reprint 1979). Dictionary, Telugu–English [Nighaṇṭu, Telugu Iṅglīṣ]. New Delhi: Asian Educational Services.",
+  href: "https://openlibrary.org/books/OL4245461M"
+};
+
+/* =========================================================
+   CONTENT BANK
+   Audio files are expected at audio/<id>.mp3 and are added later.
+   Until a file exists the page shows "recording pending".
+   ========================================================= */
+const TERMS = [
+  {
+    id: "y1", lang: "yo", room: "body", form: "gbìm / kìm", forms: "gbìm and kìm, back to back, both Low tone",
+    english: "“thud” (gbìm), “flutter” (kìm)",
+    englishNote: "Lotven says both “describe degrees of heart palpitation,” with the former associated with a heavier heartbeat.",
+    omits: "English uses two different words for weight and speed, while Yorùbá keeps one frame and changes one consonant.",
+    prompt: "Which one is a heart you’re worried about? Does “thud” sound like the same family as “flutter”?",
+    sideBySide: [
+      { script: "gbìm / kìm", gloss: "Yorùbá pair, Lotven & Ajibade 2024, p. 61" },
+      { script: "నా గుండె ధకధక లాడింది", gloss: "nā guṇḍe dhakadhaka lāḍindi, “my heart went dhakadhaka”" }
+    ],
+    loss: "The link between the two heartbeats is gone.",
+    nonverbal: {
+      text: "A two-color palette keyed to Westermann’s voicing. Voiced consonants mean heavy and soft, so gbìm gets a darker, rounder form. Voiceless consonants mean light and hard, so kìm gets a lighter, sharper form. The mapping is stated on the page as a hypothesis (Dingemanse 2018, p. 8).",
+      swatches: [{ c: "#2b4a3a", t: "gbìm: heavy" }, { c: "#e7c58a", t: "kìm: light" }]
+    },
+    judgeLabels: ["thud / flutter", "the artistic palette"],
+    scale: "flattened",
+    tests: { translation: "partial", form: "partial" },
+    sources: [
+      "Lotven & Ajibade 2024, p. 61",
+      "Dingemanse 2018, p. 8",
+      "Speaker: " + SPEAKERS.yo + " (Yorùbá), interpretation confirmed"
+    ],
+    existing: [
+      { kind: "Film score", work: "John Williams, “Main Title” from Jaws (1975)",
+        why: "A slow, low two-note pulse that listeners hear as a heartbeat. Chosen as the heavy gbìm, where weight does the work.",
+        record: "https://youtu.be/BePfzCOMRZQ", embed: { type: "youtube", id: "BePfzCOMRZQ", caption: "John Williams, “Main Title” from Jaws (1975). Embedded from YouTube." } },
+      { kind: "Film score", work: "Hans Zimmer, Dunkirk (2017)",
+        why: "A fast ticking pulse that runs under the whole film. The lighter, quick kìm.",
+        record: "https://youtu.be/wlXjP59jZCM", embed: { type: "youtube", id: "wlXjP59jZCM", caption: "Hans Zimmer, Dunkirk (2017). Embedded from YouTube." } }
+    ]
+  },
+  {
+    id: "t1", lang: "te", room: "body", form: "ధకధక / dhaka-dhaka", forms: "dhakadhaka, with transcript",
+    english: "“pounding”",
+    englishNote: "",
+    omits: "The doubled, drumming rhythm and the sense of fear or anticipation. “Pounding” gives the event but not the rhythm in the word.",
+    prompt: "When would you say this? Is it fear, excitement, or both?",
+    sideBySide: [
+      { script: "నా గుండె ధకధక లాడింది", gloss: "nā guṇḍe dhakadhaka lāḍindi, shared with Y1" }
+    ],
+    loss: "Small. This is my best candidate for “kept.”",
+    nonverbal: { text: "A recorded pulse, with a notation of the rhythm.", swatches: [] },
+    judgeLabels: ["“pounding”", "the pulse recording"],
+    scale: "kept",
+    tests: { translation: "pass", form: "pass" },
+    sources: ["Speaker: " + SPEAKERS.te + " (Telugu), interpretation confirmed", BROWN, "Duggirala (2024)"],
+    existing: [
+      { kind: "Literature", work: "Edgar Allan Poe, “The Tell-Tale Heart” (1843)",
+        why: "A heartbeat that grows louder until it exposes the narrator. A heartbeat carrying fear, which is what dhakadhaka does.",
+        record: "https://poemuseum.org/the-tell-tale-heart/", embed: null, note: "Public domain text. No media embedded yet." }
+    ],
+    researchQ: "ధగధగ (dhagadhaga, glittering) differs from ధకధక only in voicing (g vs k). That makes a voicing test of Westermann’s mapping in a second language."
+  },
+  {
+    id: "y2", lang: "yo", room: "water", form: "táló / tàlǒ", forms: "táló and tàlǒ",
+    english: "“plop” and “plop with a ripple”",
+    englishNote: "Lotven: táló is “the sound a tiny object makes when it drops into a river,” while the rising tone in tàlǒ “indicates that the object created a ripple.”",
+    omits: "The ripple, which English can only add as a second clause.",
+    prompt: "Can you hear the ripple in the second one? Where does the tone go?",
+    sideBySide: [
+      { script: "táló / tàlǒ", gloss: "Yorùbá pair, Lotven & Ajibade 2024, p. 61" },
+      { script: "నది గలగల పారుతోంది", gloss: "nadi galagala pārutōndi, “the river flows babbling”" }
+    ],
+    loss: "English can do the sound but not the aftermath packed into a tone.",
+    nonverbal: { text: "Audio of a single drop, then a drop followed by widening ripples.", swatches: [] },
+    judgeLabels: ["plop / ripple", "the audio"],
+    scale: "flattened",
+    tests: { translation: "partial", form: "fail" },
+    sources: ["Lotven & Ajibade 2024, p. 61", "Speaker: " + SPEAKERS.yo + " (Yorùbá), interpretation confirmed"],
+    existing: [
+      { kind: "Music", work: "Claude Debussy, “Reflets dans l’eau” (Images, Book I, 1905)",
+        why: "Rippling piano figures that spread outward. It matches a single event with a widening aftermath.",
+        record: "https://youtu.be/Hyiu7fBUk7o", embed: { type: "youtube", id: "Hyiu7fBUk7o", caption: "Claude Debussy, “Reflets dans l’eau,” from Images, Book I (1905). Embedded from YouTube." } },
+      { kind: "Visual art", work: "Claude Monet, a water-lily painting (Nymphéas series)",
+        why: "The visual pair for the same ripple: a surface where a drop lands and the rings it leaves.",
+        record: "https://collections.lacma.org/object/22092",
+        embed: { type: "img",
+          src: "img/monet-water-lilies.png",
+          alt: "Claude Monet, Water Lilies (Nymphéas series)",
+          caption: "Claude Monet, Water Lilies (Nymphéas series)." } }
+    ]
+  },
+  {
+    id: "t2", lang: "te", room: "water", form: "గలగల / galagala", forms: "galagala",
+    english: "“babbling”",
+    englishNote: "",
+    omits: "One form covers water, voices and bangles, and the doubling suggests continuous flow.",
+    prompt: "Which of these sounds do you hear first? Would you use it for laughter?",
+    sideBySide: [
+      { script: "నది గలగల పారుతోంది", gloss: "nadi galagala pārutōndi, shared with Y2" }
+    ],
+    loss: "English needs “babbling,” “chattering” and “jingling” for one form.",
+    nonverbal: { text: "A one-minute field recording of running water, chosen by the speaker.", swatches: [] },
+    judgeLabels: ["babbling", "the recording"],
+    scale: "flattened",
+    tests: { translation: "partial", form: "partial" },
+    sources: ["Speaker: " + SPEAKERS.te + " (Telugu), interpretation confirmed", BROWN, "Duggirala (2024)"],
+    existing: [
+      { kind: "Music", work: "Bedřich Smetana, “Vltava” (The Moldau) from Má vlast (1874)",
+        why: "Orchestral river music that starts as two small streams and builds into one flow. galagala is continuous, where táló is a single event.",
+        record: "https://youtu.be/l6kqu2mk-Kw",
+        embed: { type: "youtube", id: "l6kqu2mk-Kw",
+          caption: "Smetana, “Vltava” (The Moldau), from Má vlast. Embedded from YouTube." } }
+    ]
+  },
+  {
+    id: "y3", lang: "yo", room: "food", form: "káló / kàlò", forms: "káló (High–High) and kàlò (Low–Low)",
+    english: "“gulp” and “squander” (candidates)",
+    englishNote: "Lotven: káló “evokes the sound or motion of food being quickly swallowed,” and kàlò is associated with the metaphorical swallowing of money.",
+    omits: "The link. One bodily image carries two meanings, split by tone alone. English needs two unrelated verbs.",
+    prompt: "Do you hear these as the same word? Which tone is which?",
+    sideBySide: [
+      { script: "káló / kàlò", gloss: "Yorùbá pair, Lotven & Ajibade 2024, pp. 58, 61" },
+      { script: "గుటుక్కున మింగాడు", gloss: "guṭukkuna miṅgāḍu, “swallowed in one gulp”" },
+      { script: "డబ్బంతా గుటకాయ స్వాహా అయింది", gloss: "ḍabbantā guṭakāya svāhā ayindi, “all the money got gobbled up”. The Telugu idiom also moves from swallowing to money, by a different route." }
+    ],
+    loss: "English loses the link between eating and wasting.",
+    nonverbal: {
+      text: "A two-note talking-drum phrase: High–High against Low–Low. The tone-to-pitch idea is documented in the drum literature (Akinbo 2019).",
+      swatches: []
+    },
+    judgeLabels: ["gulp / squander", "the drum phrase"],
+    scale: "flattened",
+    tests: { translation: "partial", form: "pass" },
+    sources: ["Lotven & Ajibade 2024, pp. 58, 61", "Akinbo 2019", "Speaker: " + SPEAKERS.yo + " (Yorùbá), interpretation confirmed"],
+    existing: [
+      { kind: "Visual art", work: "William Hogarth, A Rake’s Progress, Plate 6 (The Gaming House)",
+        why: "Shows the money-swallowing sense Lotven names, through a gambler. Chosen as the kàlò image. The print is dated 1735, after the 1732–33 painting series.",
+        record: "https://collections.tepapa.govt.nz/object/39134", embed: { type: "img", src: "img/hogarth-rake-plate-6.png", alt: "William Hogarth, A Rake’s Progress, Plate 6 (The Gaming House)", caption: "William Hogarth, A Rake’s Progress, Plate 6 (The Gaming House). Image supplied by the author." },
+        note: "Not embedded yet: the National Gallery of Art marks this print public domain (accession 1944.5.33), but its image address still needs checking." }
+    ]
+  },
+  {
+    id: "t3", lang: "te", room: "food", form: "ఘుమఘుమ / ghumaghuma", forms: "ghumaghuma",
+    english: "“fragrant” or “aromatic”",
+    englishNote: "",
+    omits: "English has no ideophone for smell. “Fragrant” is a state, while the doubled Telugu form suggests waves of scent arriving.",
+    prompt: "What smell do you picture? Is it only for food?",
+    sideBySide: [
+      { script: "వంటగది ఘుమఘుమలాడుతోంది", gloss: "vaṇṭagadi ghumaghumalāḍutōndi, “the kitchen is wafting”" },
+      { script: "Yorùbá counterpart: none in my source yet", gloss: "to be asked again in the speaker interview" }
+    ],
+    loss: "This is a sense where English has the fewest tools.",
+    nonverbal: {
+      text: "A palette from a spice shelf (turmeric, chili, curry-leaf green), which doubles as the site’s own palette.",
+      swatches: [{ c: "#d9a441", t: "turmeric" }, { c: "#c8542b", t: "chili" }, { c: "#4f7a3c", t: "curry leaf" }]
+    },
+    judgeLabels: ["fragrant", "the palette"],
+    scale: "lost",
+    tests: { translation: "fail", form: "fail" },
+    sources: ["Speaker: " + SPEAKERS.te + " (Telugu), interpretation confirmed", BROWN, "Dingemanse 2018, p. 3 (smell is within “sensory imagery”)"],
+    existing: [
+      { kind: "Film", work: "Ratatouille (2007), Anton Ego’s childhood-kitchen flashback",
+        why: "A smell or taste arriving all at once and carrying memory: what ghumaghuma does and “fragrant” cannot.",
+        record: "https://youtu.be/5m7SGjJo7c4", embed: { type: "youtube", id: "5m7SGjJo7c4", caption: "Ratatouille (2007), Anton Ego’s childhood-kitchen flashback. Embedded from YouTube." },
+        note: "Not embedded: the film is in copyright, so the site links its record only." },
+      { kind: "Literature", work: "Marcel Proust, the madeleine passage, Swann’s Way (In Search of Lost Time, 1913)",
+        why: "The text source for the same memory-through-smell comparison.",
+        record: "https://youtu.be/GkqzMvIcBmA", embed: { type: "youtube", id: "GkqzMvIcBmA", caption: "Proust, the madeleine passage, Swann’s Way. Embedded from YouTube." }, note: "Public domain text. No media embedded yet." }
+    ]
+  },
+  {
+    id: "y4", lang: "yo", room: "joy", form: "gbẹ̀dẹ̀múkẹ́", forms: "gbẹ̀dẹ̀múkẹ́",
+    english: "“festive”",
+    englishNote: "Lotven: it “depicts a festive mood with maximal enjoyment and entertainment,” built from gbẹ̀dẹ̀ (“a simple/easy situation or event”) and múkẹ́ (“a relaxing mood or situation”).",
+    omits: "The relaxation inside the celebration, and its use as a greeting.",
+    prompt: "When do you say this? To whom? Is “festive” the right size?",
+    sideBySide: [
+      { script: "Gbẹ̀dẹ̀múkẹ́ ni gbogbo wa wà", gloss: "“We are all in a festive/relaxing mood” (Lotven & Ajibade 2024, p. 64)" },
+      { script: "Ẹ kú gbẹdẹmukẹ òpin ọ̀sẹ̀", gloss: "“Have a happy fun weekend!” (p. 64; no tone marks in the source)" },
+      { script: "పిల్లలు కిలకిల నవ్వారు", gloss: "shared with T4" }
+    ],
+    loss: "The greeting use and the “easy” compound are gone.",
+    nonverbal: { text: "A short, loose, repeated movement phrase, filmed, with a text description and captions.", swatches: [] },
+    judgeLabels: ["festive", "the movement"],
+    scale: "lost",
+    tests: { translation: "partial", form: "fail" },
+    sources: ["Lotven & Ajibade 2024, p. 64", "Speaker: " + SPEAKERS.yo + " (Yorùbá), interpretation confirmed"],
+    existing: [
+      { kind: "Performance tradition", work: "Gẹ̀lẹ̀dẹ́ (Gelede), Yorùbá masquerade tradition",
+        why: "The collective, festive, music-and-dance setting where a word like this lives. Standard study: Henry and Margaret Drewal, Gelede: Art and Female Power among the Yoruba (1983).",
+        record: "https://www.metmuseum.org/art/collection/search/316460", embed: null, note: "No media embedded yet." },
+      { kind: "Music", work: "King Sunny Adé, Juju Music (1982)",
+        why: "Juju uses talking drums and is dance music.",
+        record: "https://youtu.be/LIO9MjfOo48", embed: { type: "youtube", id: "LIO9MjfOo48", caption: "King Sunny Adé, Juju Music (1982). Embedded from YouTube." },
+        note: "Not embedded: the album is in copyright, so the site links its record only." }
+    ]
+  },
+  {
+    id: "t4", lang: "te", room: "joy", form: "కిలకిల / kilakila", forms: "kilakila",
+    english: "“giggling” or “chirping”",
+    englishNote: "",
+    omits: "The same form covers two sounds, and the doubled, rising pattern suggests ringing.",
+    prompt: "Is it laughter or birds first? Is it only for happy sounds?",
+    sideBySide: [
+      { script: "పిల్లలు కిలకిల నవ్వారు", gloss: "pillalu kilakila navvāru" },
+      { script: "Gbẹ̀dẹ̀múkẹ́ (Y4)", gloss: "Yorùbá counterpart: the greeting line in Y4" }
+    ],
+    loss: "English must pick one sense.",
+    nonverbal: { text: "A short overlapped recording of three consenting adult speakers laughing.", swatches: [] },
+    judgeLabels: ["giggling", "the recording"],
+    scale: "flattened",
+    tests: { translation: "partial", form: "partial" },
+    sources: ["Speaker: " + SPEAKERS.te + " (Telugu), interpretation confirmed", BROWN],
+    existing: [
+      { kind: "Music", work: "Ludwig van Beethoven, Symphony No. 6 (“Pastoral”), ending of the 2nd movement (1808)",
+        why: "The orchestra imitates a nightingale, quail and cuckoo, with flute, oboe and clarinet. Chosen for the chirp sense.",
+        record: "https://youtu.be/9PrbLsQ_g7s", embed: { type: "youtube", id: "9PrbLsQ_g7s", caption: "Beethoven, Symphony No. 6, 2nd movement. Embedded from YouTube." },
+        note: "Public domain score. No media embedded yet." },
+      { kind: "Film", work: "Mayabazar (1957, dir. K. V. Reddy), “Vivaha Bhojanambu” feast scene",
+        why: "A beloved Telugu film. The scene is joy and abundance.",
+        record: "https://youtu.be/izOhs8R4Ack", embed: { type: "youtube", id: "izOhs8R4Ack", caption: "Mayabazar (1957), “Vivaha Bhojanambu.” Embedded from YouTube." },
+        note: "Not embedded: the film is in copyright, so the site links its record only." }
+    ]
+  },
+  {
+    id: "y5", lang: "yo", room: "open", form: "gbangbakedere", forms: "gbangbakedere, from gbangba (“openness, especially a part of a building”) and kedere (“clearly”)",
+    english: "“wide open” or “out in the open”",
+    englishNote: "Lotven’s own definition, “It is no longer a secret,” drops the building and the opening image.",
+    omits: "The building and opening image. Lotven’s definition drops it.",
+    prompt: "Do you picture a doorway or a courtyard? Does “secret” feel right?",
+    sideBySide: [
+      { script: "Gbangbakedere ni l-ójú Olódùmarè", gloss: "“It is wide-open before God” (Lotven & Ajibade 2024, p. 64)" },
+      { script: "Ó ti hàn gbangbakedere", gloss: "“It has been exposed openly / It is no longer a secret” (p. 65)" }
+    ],
+    loss: "A spatial opening becomes a state of knowledge.",
+    nonverbal: { text: "A filmed opening gesture in a wide shot, after Nuckolls’ wide-angle framing.", swatches: [] },
+    judgeLabels: ["out in the open", "the film"],
+    scale: "flattened",
+    tests: { translation: "partial", form: "partial" },
+    sources: ["Lotven & Ajibade 2024, pp. 64–65", "Speaker: " + SPEAKERS.yo + " (Yorùbá), interpretation confirmed"],
+    existing: [
+      { kind: "Sculpture", work: "Olowe of Ise, carved palace doors and veranda posts for the Ogoga of Ikere (c. 1910–14)",
+        why: "gbangba is explicitly about a part of a building. Standard study: Roslyn Adele Walker, Olowe of Ise: A Yoruba Sculptor to Kings (1998).",
+        record: "https://africa.si.edu/exhibitions/olowe-ise-yoruba-sculptor-kings",
+        embed: [{ type: "img",
+          src: "img/olowe-sculpture.png",
+          alt: "Olowe of Ise, carved sculpture (image supplied by the author)",
+          caption: "Olowe of Ise, carved sculpture. Image supplied by the author; the Ikere attribution still needs confirming." },
+          { type: "youtube", id: "Yc9NJnx58Wg", caption: "Olowe of Ise, palace doors and veranda posts. Embedded from YouTube." }] },
+      { kind: "Film", work: "The Wizard of Oz (1939), the curtain reveal",
+        why: "A wide reveal of what was hidden.",
+        record: "https://youtu.be/YWyCCJ6B2WE", embed: { type: "youtube", id: "YWyCCJ6B2WE", caption: "The Wizard of Oz (1939), the curtain reveal. Embedded from YouTube." },
+        note: "Not embedded: the film is in copyright, so the site links its record only." }
+    ]
+  }
+];
+
+const PROVERBS = [
+  {
+    id: "p1", lang: "yo", short: "Òwe lẹ́ṣin ọ̀rọ̀…",
+    form: "Òwe lẹ́ṣin ọ̀rọ̀; bí ọ̀rọ̀ bá sọnù, òwe là ń fi wá a",
+    forms: "tones are my reconstruction of Salami’s untoned “Owe lesin oro, bi oro ba sonu, owe l’a fi i waa” (p. 325)",
+    literal: "A proverb is the horse of speech; if speech is lost, it is with a proverb that we look for it.",
+    intended: "Salami’s definition: “A proverb is the vehicle or mechanism for smooth communication.”",
+    social: "Yankah via Yede et al. (2025, p. 97): who says it, to whom, and in what situation. Confirmed by " + SPEAKERS.yo + ".",
+    gap: "Salami’s parenthetical drops the “lost word” clause, then turns it into “obstacles on the path to clear communication” in his commentary. A proverb about recovering lost words loses the lost-words part in translation.",
+    sideBySide: [{ script: "అందని ద్రాక్ష పుల్లన", gloss: "see P3, for comparison of how each language packs wisdom into an image" }],
+    nonverbal: "The proverb’s tone pattern played on a talking drum.",
+    scale: "flattened",
+    sources: ["Salami 2004, p. 325", "Akinbo 2019", "Yankah, via Yede et al. (p. 97)", "Speaker: " + SPEAKERS.yo + " (Yorùbá), interpretation confirmed"],
+    existing: []
+  },
+  {
+    id: "p2", lang: "yo", short: "Ẹni bá dalẹ̀ á bá ilẹ̀ lọ",
+    form: "Ẹni bá dalẹ̀ á bá ilẹ̀ lọ",
+    forms: "Yede, Akanmu & Mayadenu, Data 7, p. 101",
+    literal: "The authors’ opinion: “He who betrays will surely die of betrayal.”",
+    intended: "He who betrays will surely die of betrayal (confirmed by the speaker).",
+    social: "Yankah via Yede et al. (2025, p. 97). Confirmed by " + SPEAKERS.yo + ".",
+    gap: "The Yorùbá repeats ilẹ̀ (“land, ground”). Dalẹ̀ is “betray,” and the authors say the repeated word is “betrayal” (p. 101). The English erases the ground.",
+    sideBySide: [{ script: "తినగ తినగ వేము తియ్యగుండు", gloss: "see P4, another proverb that depends on repeated words" }],
+    nonverbal: "Spoken, with a short ground-sound recording underneath.",
+    scale: "flattened",
+    sources: ["Yede, Akanmu & Mayadenu, Data 7, p. 101", "Speaker: " + SPEAKERS.yo + " (Yorùbá), interpretation confirmed"],
+    existing: [
+      { kind: "Drama", work: "Sophocles, Antigone (c. 441 BCE)",
+        why: "Creon denies a traitor burial in the earth: the nearest widely read case of “land” and betrayal tied together, though the match is loose.",
+        record: "https://human.libretexts.org/Bookshelves/Literature_and_Literacy/Literacy_and_Critical_Thinking/Writing_and_Critical_Thinking_Through_Literature_(Ringo_and_Kashyap)/09%3A_Drama_Readings/9.03%3A_Sophocles._Antigone_(441_BC)", embed: null, note: "Public domain text. No media embedded yet." }
+    ]
+  },
+  {
+    id: "p3", lang: "te", short: "అందని ద్రాక్ష పుల్లన",
+    form: "అందని ద్రాక్ష పుల్లన", forms: "andani drākṣa pullana",
+    literal: "The grapes you can’t reach are sour.",
+    intended: "sour grapes",
+    social: "Confirmed by " + SPEAKERS.te + " (Telugu).",
+    gap: "Very little. English already has the same image from Aesop’s fox. Bernard & Fernandez’s Richmond model places such proverbs at the “similar meaning and expression” end (pp. 330–331).",
+    sideBySide: [{ script: "P2, for contrast", gloss: "Yorùbá" }],
+    nonverbal: "A 20-second two-voice exchange showing the situation that triggers the proverb (Yankah on context, p. 97).",
+    scale: "kept",
+    sources: [BROWN, "Aesop, “The Fox and the Grapes,” with La Fontaine’s version", "Speaker: " + SPEAKERS.te + " (Telugu), interpretation confirmed", "Telugu proverb collection: to be verified before citation"],
+    existing: [
+      { kind: "Literature / fable", work: "Aesop, “The Fox and the Grapes,” with Jean de La Fontaine’s version",
+        why: "The English image is already in circulation, so the comparison shows how little is lost.",
+        record: "https://aesopsfables.wordpress.com/the-fox-the-grapes/", embed: { type: "img", src: "img/aesop-fox-grapes.png", alt: "Illustration of a fox looking up at a bunch of grapes", caption: "Illustration from “The Fox and the Grapes.” Image supplied by the author." } }
+    ]
+  },
+  {
+    id: "p4", lang: "te", short: "తినగ తినగ వేము తియ్యగుండు",
+    form: "తినగ తినగ వేము తియ్యగుండు", forms: "tinaga tinaga vēmu tiyyanuṇḍu",
+    literal: "keep eating it and even neem turns sweet",
+    intended: "“Even neem tastes sweet if you keep eating it.”",
+    social: "Confirmed by " + SPEAKERS.te + " (Telugu).",
+    gap: "Neem is intensely bitter, a taste most English readers don’t know. The repeated tinaga tinaga (“as one keeps eating”) carries duration in its form.",
+    sideBySide: [{ script: "P2, for contrast", gloss: "Yorùbá" }],
+    nonverbal: "A color gradient from bitter green to sweet gold.",
+    scale: "flattened",
+    sources: ["Vemana’s verse (C. P. Brown’s Verses of Vemana)", BROWN, "Speaker: " + SPEAKERS.te + " (Telugu), interpretation confirmed", "Dingemanse 2015, p. 954"],
+    existing: [
+      { kind: "Music", work: "Maurice Ravel, Boléro (1928)",
+        why: "One theme repeated with a building crescendo, widely discussed as repetition that wins you over. A parallel to the repeated act of eating.",
+        record: "https://youtu.be/n4hqmKKE-nM", embed: { type: "youtube", id: "n4hqmKKE-nM", caption: "Maurice Ravel, Boléro (1928). Embedded from YouTube." } }
+    ]
+  }
+];
+
+const ZONES = {
+  kept: ["T1 ధకధక", "P3 అందని ద్రాక్ష పుల్లన"],
+  flattened: ["Y1 gbìm / kìm", "Y2 táló / tàlǒ", "Y3 káló / kàlò", "T2 గలగల", "T4 కిలకిల", "Y5 gbangbakedere", "P1 Òwe lẹ́ṣin ọ̀rọ̀", "P2 Ẹni bá dalẹ̀", "P4 తినగ తినగ వేము"],
+  lost: ["T3 ఘుమఘుమ", "Y4 gbẹ̀dẹ̀múkẹ́"]
+};
+
+/* Room anchor points, as fractions of the field width and of an initial height. */
+const ROOMS = [
+  { key: "body",    x: 0.20, y: 0.12 },
+  { key: "water",   x: 0.68, y: 0.12 },
+  { key: "food",    x: 0.22, y: 0.42 },
+  { key: "joy",     x: 0.72, y: 0.42 },
+  { key: "open",    x: 0.45, y: 0.74 },
+  { key: "sayings", x: 0.82, y: 0.80 }
+];
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+let currentLang = "en";
+const storage = {
+  get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* storage unavailable */ } }
+};
+
+function t(key) {
+  const pick = (dict) => {
+    let v = dict;
+    for (const p of key.split(".")) { if (v == null) return undefined; v = v[p]; }
+    return v;
+  };
+  const v = currentLang !== "en" ? pick(UI[currentLang]) : undefined;
+  if (v !== undefined) return { text: v, lang: currentLang };
+  return { text: pick(UI.en), lang: "en" };
+}
+function tt(key) { return t(key).text; }
+
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+function roomName(key) { return UI.en.rooms[key] || key; }
+function findTerm(id) { return TERMS.find(x => x.id === id); }
+function findProverb(id) { return PROVERBS.find(x => x.id === id); }
+function isTelugu(s) { return /[ఀ-౿]/.test(s); }
+function citeHtml(c) {
+  return typeof c === "string" ? esc(c) : `${esc(c.t)} <a href="${esc(c.href)}" rel="noopener">record ↗</a>`;
+}
+
+/* =========================================================
+   AUDIO
+   ========================================================= */
+function audioBlock(id, label) {
+  return `
+    <div class="audio-wrap" data-audio="${esc(id)}">
+      <audio controls preload="none" src="audio/${esc(id)}.mp3" aria-label="${esc(label)}"></audio>
+      <div class="pending-note" data-audio-status>${esc(tt("pending"))}</div>
+    </div>`;
+}
+
+function wireAudio(root, onEnded) {
+  root.querySelectorAll(".audio-wrap audio").forEach(a => {
+    const status = a.closest(".audio-wrap").querySelector("[data-audio-status]");
+    a.addEventListener("error", () => { if (status) status.hidden = false; });
+    a.addEventListener("loadeddata", () => { if (status) status.hidden = true; });
+    if (onEnded) a.addEventListener("ended", onEnded);
+  });
+}
+
+/* =========================================================
+   OUTSIDE WORKS (embedded where verified, otherwise linked)
+   ========================================================= */
+function embedList(x) { return Array.isArray(x) ? x : (x ? [x] : []); }
+function renderEmbed(em) {
+  if (!em) return "";
+  if (em.type === "img") {
+    return `<figure class="work-fig"><img src="${esc(em.src)}" alt="${esc(em.alt)}" loading="lazy">
+      <figcaption class="small">${esc(em.caption)}</figcaption></figure>`;
+  }
+  if (em.type === "audio") {
+    return `<audio controls preload="none" src="${esc(em.src)}" aria-label="${esc(em.caption)}"></audio>
+      <p class="small">${esc(em.caption)}</p>`;
+  }
+  if (em.type === "youtube") {
+    return `<div class="video"><iframe src="https://www.youtube.com/embed/${esc(em.id)}"
+      title="${esc(em.caption)}" loading="lazy" allowfullscreen
+      referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+      <p class="small">${esc(em.caption)}</p>`;
+  }
+  return "";
+}
+
+function renderWorks(list) {
+  if (!list || !list.length) return `<p class="small">No outside work chosen for this entry.</p>`;
+  return `<ul class="works">${list.map(e => `
+    <li>
+      <div class="work-kind mono">${esc(e.kind)}</div>
+      <p class="work-title">${esc(e.work)}</p>
+      <p class="work-why">${esc(e.why)}</p>
+      ${[].concat(e.embed || []).map(x => renderEmbed(x)).join("")}
+      ${e.embed ? "" : `<p class="small">${esc(e.note || tt("noEmbed"))}</p>`}
+      <p class="small"><a href="${esc(e.record)}" rel="noopener" target="_blank">record ↗</a></p>
+    </li>`).join("")}</ul>`;
+}
+
+/* =========================================================
+   LANDING
+   ========================================================= */
+function renderLanding() {
+  const pool = TERMS.map(x => ({ ...x, english: x.english }))
+    .concat(PROVERBS.map(p => ({ ...p, english: p.intended })));
+  const pick = pool[Math.floor(Math.random() * pool.length)];
+  return `
+    <section class="landing" aria-labelledby="landing-h">
+      <h1 id="landing-h" class="sr-only">what survives?</h1>
+      <p class="mono">${esc(tt("randomTerm"))}</p>
+      <div class="big-word">
+        <div class="mustard-shape" aria-hidden="true"></div>
+        <div class="word" lang="${esc(pick.lang)}">${esc(pick.form)}</div>
+      </div>
+      <div class="meta-line"><span class="mono">${esc(pick.forms || "")}</span></div>
+      <p class="sub" style="margin-top:0.7rem">${esc(tt("listen"))}</p>
+      <div class="meta-line">
+        <button type="button" class="play" id="landing-play">${esc(tt("play"))}</button>
+        ${audioBlock(pick.id, "random word audio")}
+      </div>
+      <div class="reveal-english hidden" id="landing-english" lang="en">${esc(pick.english)}</div>
+      <p class="blurb">${esc(tt("landingBlurb"))}</p>
+      <a class="enter" href="#/index">${esc(tt("enterIndex"))} →</a>
+    </section>`;
+}
+
+function bindLanding() {
+  const play = document.getElementById("landing-play");
+  const eng = document.getElementById("landing-english");
+  const audio = document.querySelector(".landing audio");
+  if (!play || !audio) return;
+  wireAudio(document.getElementById("app"));
+  play.addEventListener("click", () => {
+    audio.play().catch(() => {});
+    play.disabled = true;
+    play.textContent = tt("playing");
+  });
+  audio.addEventListener("ended", () => {
+    eng.classList.remove("hidden");
+    play.disabled = false;
+    play.textContent = tt("play");
+  });
+}
+
+/* =========================================================
+   INDEX: non-overlapping floating layout
+   ========================================================= */
+function indexWords() {
+  return TERMS.map(x => ({ ...x, href: `#/term/${x.id}`, short: x.form, kind: "term" }))
+    .concat(PROVERBS.map(p => ({ ...p, href: `#/proverb/${p.id}`, english: p.intended, room: "sayings", kind: "proverb" })));
+}
+
+function renderIndex() {
+  const all = indexWords();
+  const listItems = all.map(w => `<li><a href="${w.href}" lang="${esc(w.lang)}">${esc(w.form)}</a>
+    <span class="small" lang="en">· ${esc(w.english)} · ${esc(roomName(w.room))}</span></li>`).join("");
+  return `
+    <section aria-labelledby="index-h">
+      <div class="index-head">
+        <h1 id="index-h">${esc(tt("index"))}</h1>
+        <p class="sub">${esc(tt("wander"))}</p>
+      </div>
+      <button type="button" class="list-view-toggle" id="list-toggle" aria-pressed="false">${esc(tt("listView"))}</button>
+      <div class="float-field" id="float-view"></div>
+      <div class="list-view" id="list-view"><ol>${listItems}</ol></div>
+    </section>`;
+}
+
+function findSpot(cx, cy, w, h, W, placed) {
+  const maxR = 2000;
+  for (let r = 0; r <= maxR; r += 8) {
+    const steps = Math.max(8, Math.round((2 * Math.PI * r) / 24));
+    for (let k = 0; k < steps; k++) {
+      const a = (k / steps) * Math.PI * 2;
+      const x = Math.round(cx + r * Math.cos(a) - w / 2);
+      const y = Math.round(cy + r * Math.sin(a) * 0.75 - h / 2);
+      if (x < 4 || x + w > W - 4 || y < 4) continue;
+      const hit = placed.some(p => x < p.r && x + w > p.l && y < p.b && y + h > p.t);
+      if (!hit) return { x, y };
+    }
+  }
+  return null;
+}
+
+function layoutIndex() {
+  const field = document.getElementById("float-view");
+  if (!field || field.offsetParent === null) return;
+  const W = field.clientWidth;
+  if (!W) return;
+  const H0 = Math.max(520, Math.round(W * 0.7));
+  field.innerHTML = "";
+
+  const all = indexWords();
+  const byRoom = {};
+  all.forEach(w => { (byRoom[w.room] = byRoom[w.room] || []).push(w); });
+
+  const queue = [];
+  ROOMS.forEach(r => {
+    const lab = document.createElement("div");
+    lab.className = "room-label";
+    lab.textContent = tt("rooms." + r.key);
+    field.appendChild(lab);
+    queue.push({ el: lab, room: r, isLabel: true });
+    (byRoom[r.key] || []).forEach(w => {
+      const a = document.createElement("a");
+      a.className = "float-word" + (w.kind === "proverb" ? " proverb" : "");
+      a.href = w.href;
+      a.lang = w.lang;
+      a.innerHTML = `${esc(w.short || w.form)}<span class="eng" lang="en">${esc(w.english)}${w.scale ? " · " + esc(tt("zones." + w.scale)) : ""}</span>`;
+      field.appendChild(a);
+      queue.push({ el: a, room: r, isLabel: false });
+    });
+  });
+
+  // Labels go first so words avoid them.
+  queue.sort((p, q) => (p.isLabel === q.isLabel ? 0 : p.isLabel ? -1 : 1));
+  const placed = [];
+  let maxBottom = 0;
+  queue.forEach(q => {
+    const w = q.el.offsetWidth, h = q.el.offsetHeight;
+    const spot = findSpot(q.room.x * W, q.room.y * H0, w, h, W, placed) || { x: 4, y: maxBottom + 16 };
+    q.el.style.left = spot.x + "px";
+    q.el.style.top = spot.y + "px";
+    placed.push({ l: spot.x - 8, t: spot.y - 6, r: spot.x + w + 8, b: spot.y + h + 6 });
+    maxBottom = Math.max(maxBottom, spot.y + h);
+  });
+  field.style.height = (maxBottom + 40) + "px";
+}
+
+function bindIndex() {
+  const btn = document.getElementById("list-toggle");
+  const fv = document.getElementById("float-view");
+  const lv = document.getElementById("list-view");
+  if (!btn) return;
+  layoutIndex();
+  btn.addEventListener("click", () => {
+    const showList = !lv.classList.contains("show");
+    lv.classList.toggle("show", showList);
+    fv.style.display = showList ? "none" : "";
+    btn.setAttribute("aria-pressed", String(showList));
+    btn.textContent = showList ? tt("floatView") : tt("listView");
+    if (!showList) layoutIndex();
+  });
+}
+
+let layoutTimer = null;
+window.addEventListener("resize", () => {
+  clearTimeout(layoutTimer);
+  layoutTimer = setTimeout(() => {
+    if (location.hash.replace(/^#\/?/, "") === "index") layoutIndex();
+  }, 150);
+});
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => {
+    if (location.hash.replace(/^#\/?/, "") === "index") layoutIndex();
+  });
+}
+
+/* =========================================================
+   TERM PAGE
+   ========================================================= */
+function scaleLink(s) {
+  return `<a href="#/scale" class="scale-mark zone-${esc(s)}">${esc(tt("zones." + s))}</a>`;
+}
+
+function renderTerm(id) {
+  const w = findTerm(id);
+  if (!w) return renderNotFound();
+  const idx = TERMS.indexOf(w);
+  const prev = TERMS[(idx - 1 + TERMS.length) % TERMS.length];
+  const next = TERMS[(idx + 1) % TERMS.length];
+  const s = tt("sections");
+  const speaker = SPEAKERS[w.lang];
+
+  const sideBySide = w.sideBySide.map(l => `
+    <div class="line">
+      <div class="script" lang="${isTelugu(l.script) ? "te" : "yo"}">${esc(l.script)}</div>
+      <div class="gloss" lang="en">${esc(l.gloss)}</div>
+    </div>`).join("");
+
+  const swatches = (w.nonverbal.swatches || []).map(x => `<div class="swatch" style="background:${x.c}">${esc(x.t)}</div>`).join("");
+
+  return `
+    <article class="term" data-term="${esc(w.id)}" aria-labelledby="term-h">
+      <header class="term-head">
+        <p class="mono">${esc(roomName(w.room))} · ${esc(w.id.toUpperCase())}</p>
+        <h1 class="form-big" id="term-h" lang="${esc(w.lang)}">${esc(w.form)}</h1>
+        <p class="sub" lang="en">${esc(tt("listen"))}</p>
+      </header>
+
+      <section class="section" aria-labelledby="s1">
+        <div class="label" id="s1">1 · ${esc(s[0])}</div>
+        <div class="body">
+          ${audioBlock(w.id, w.form + " audio")}
+          <p class="transcript" lang="${esc(w.lang)}">${esc(w.forms)}</p>
+          ${w.lang === "yo" ? `<p class="tone-legend">${esc(tt("toneLegend"))}</p>` : ""}
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="label">2 · ${esc(s[1])}</div>
+        <div class="body"><p lang="en">${esc(w.english)}</p>${w.englishNote ? `<p class="small" lang="en">${esc(w.englishNote)}</p>` : ""}</div>
+      </section>
+
+      <section class="section">
+        <div class="label">3 · ${esc(s[2])}</div>
+        <div class="body"><p lang="en">${esc(w.omits)}</p></div>
+      </section>
+
+      <section class="section" aria-labelledby="works-${esc(w.id)}">
+        <div class="label" id="works-${esc(w.id)}">4 · ${esc(s[3])}</div>
+        <div class="body">${renderWorks(w.existing)}</div>
+      </section>
+
+      <section class="section">
+        <div class="label">5 · ${esc(s[4])}</div>
+        <div class="body">
+          <p lang="en">Confirmed by ${esc(speaker)} (${w.lang === "yo" ? "Yorùbá" : "Telugu"}).</p>
+          <p class="small" lang="en"><em>Question asked of the speaker:</em> ${esc(w.prompt)}</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="label">6 · ${esc(s[5])}</div>
+        <div class="body side-by-side">${sideBySide}</div>
+      </section>
+
+      <section class="section">
+        <div class="label">7 · ${esc(s[6])}</div>
+        <div class="body"><p lang="en">${esc(w.loss)}</p></div>
+      </section>
+
+      <section class="section">
+        <div class="label">8 · ${esc(s[7])}</div>
+        <div class="body">
+          <div class="rendering-box" lang="en">
+            <div class="mono">${esc(tt("nonverbalNote"))}</div>
+            <p style="margin:0">${esc(w.nonverbal.text)}</p>
+            ${swatches ? `<div class="swatches">${swatches}</div>` : ""}
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="label">9 · ${esc(s[8])}</div>
+        <div class="body">
+          <div class="three-cols">
+            <div class="col"><div class="mono">English</div><p lang="en">${esc(w.judgeLabels[0])}</p></div>
+            <div class="col"><div class="mono">My rendering</div><p lang="en">${esc(w.judgeLabels[1])}</p></div>
+            <div class="col"><div class="mono">Speaker</div><p lang="en">Interpretation confirmed by ${esc(speaker)}.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="label">10 · ${esc(s[9])}</div>
+        <div class="body">
+          <p lang="en">Scale: ${scaleLink(w.scale)}</p>
+          <p class="small" lang="en">Tests: translation (${esc(w.tests.translation)}), form (${esc(w.tests.form)}), speaker (confirmed).</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="label">11 · ${esc(s[10])}</div>
+        <div class="body">
+          <ul class="refs small" lang="en">${w.sources.map(c => `<li>${citeHtml(c)}</li>`).join("")}</ul>
+          ${w.researchQ ? `<p class="small" lang="en" style="margin-top:1rem"><em>Research question:</em> ${esc(w.researchQ)}</p>` : ""}
+        </div>
+      </section>
+
+      <nav class="next-prev" aria-label="Term navigation">
+        <a href="#/term/${esc(prev.id)}">← ${esc(prev.form)}</a>
+        <a href="#/index">${esc(tt("backIndex"))}</a>
+        <a href="#/term/${esc(next.id)}">${esc(next.form)} →</a>
+      </nav>
+    </article>`;
+}
+
+/* =========================================================
+   PROVERB PAGE
+   ========================================================= */
+function renderProverb(id) {
+  const p = findProverb(id);
+  if (!p) return renderNotFound();
+  const idx = PROVERBS.indexOf(p);
+  const prev = PROVERBS[(idx - 1 + PROVERBS.length) % PROVERBS.length];
+  const next = PROVERBS[(idx + 1) % PROVERBS.length];
+  const s = tt("sections");
+  const speaker = SPEAKERS[p.lang];
+  const sideBySide = p.sideBySide.map(l => `<p class="small" lang="en"><span lang="${isTelugu(l.script) ? "te" : "yo"}">${esc(l.script)}</span> · ${esc(l.gloss)}</p>`).join("");
+  return `
+    <article class="proverb" aria-labelledby="pv-h">
+      <header class="term-head">
+        <p class="mono">${esc(tt("rooms.sayings"))} · ${esc(p.id.toUpperCase())}</p>
+        <h1 class="form-big" id="pv-h" lang="${esc(p.lang)}" style="font-size:clamp(1.6rem,4.5vw,2.6rem)">${esc(p.form)}</h1>
+        <p class="sub" lang="en">${esc(tt("listen"))}</p>
+      </header>
+      <section class="section"><div class="label">1 · ${esc(s[0])}</div><div class="body">${audioBlock(p.id, "proverb audio")}<p class="transcript" lang="${esc(p.lang)}">${esc(p.forms || "")}</p></div></section>
+      <section class="section"><div class="label">${esc(tt("proverbLiteral"))}</div><div class="body"><p lang="en">${esc(p.literal)}</p></div></section>
+      <section class="section"><div class="label">${esc(tt("proverbIntended"))}</div><div class="body"><p lang="en">${esc(p.intended)}</p></div></section>
+      <section class="section"><div class="label">${esc(tt("socialHdr"))}</div><div class="body"><div class="social-panel" lang="en">${esc(p.social)}</div></div></section>
+      <section class="section"><div class="label">${esc(tt("widestGap"))}</div><div class="body"><p class="widest-gap" lang="en">${esc(p.gap)}</p></div></section>
+      <section class="section"><div class="label">${esc(s[3])}</div><div class="body">${renderWorks(p.existing)}</div></section>
+      <section class="section"><div class="label">${esc(s[5])}</div><div class="body">${sideBySide}</div></section>
+      <section class="section"><div class="label">${esc(s[7])}</div><div class="body"><div class="rendering-box" lang="en"><div class="mono">${esc(tt("nonverbalNote"))}</div><p style="margin:0">${esc(p.nonverbal)}</p></div></div></section>
+      <section class="section"><div class="label">${esc(s[10])}</div><div class="body"><ul class="refs small" lang="en">${p.sources.map(c => `<li>${citeHtml(c)}</li>`).join("")}</ul><p class="small" lang="en">Speaker: ${esc(speaker)}.</p></div></section>
+      <nav class="next-prev" aria-label="Proverb navigation">
+        <a href="#/proverb/${esc(prev.id)}">← ${esc(prev.short)}</a>
+        <a href="#/index">${esc(tt("backIndex"))}</a>
+        <a href="#/proverb/${esc(next.id)}">${esc(next.short)} →</a>
+      </nav>
+    </article>`;
+}
+
+/* =========================================================
+   SCALE, REFERENCES, ABOUT
+   ========================================================= */
+function renderScale() {
+  const zoneHtml = ["kept", "flattened", "lost"].map(z => `
+    <div class="scale-wash zone-${z}">
+      <h3>${esc(tt("zones." + z))} <span class="mono">${esc(tt("zoneRule." + z))}</span></h3>
+      <div class="scale-words">
+        ${ZONES[z].map(x => {
+          const id = x.split(" ")[0].toLowerCase();
+          const href = findTerm(id) ? `#/term/${id}` : findProverb(id) ? `#/proverb/${id}` : "#/index";
+          return `<a href="${href}">${esc(x)}</a>`;
+        }).join("")}
+      </div>
+    </div>`).join("");
+  return `
+    <section aria-labelledby="scale-h">
+      <h1 id="scale-h">${esc(tt("scale"))}</h1>
+      <p>${esc(tt("scaleIntro"))}</p>
+      <p class="small">${esc(tt("scaleNote"))}</p>
+      <h2 class="sub-h">Three tests</h2>
+      <table class="plain">
+        <tr><th>test</th><th>question</th></tr>
+        <tr><td>1. Translation</td><td>Does the English give the core event, such as a swallowing, a ripple or a pulse?</td></tr>
+        <tr><td>2. Form</td><td>Does the English keep the formal feature doing the work: repetition, length, tone or voicing?</td></tr>
+        <tr><td>3. Speaker</td><td>Does a native speaker accept the English? They answer right, partly or wrong.</td></tr>
+      </table>
+      <h2 class="sub-h">Zones</h2>
+      ${zoneHtml}
+    </section>`;
+}
+
+function renderReferences() {
+  const worksList = TERMS.flatMap(x => (x.existing || []).map(e => ({ e, form: x.form })))
+    .concat(PROVERBS.flatMap(x => (x.existing || []).map(e => ({ e, form: x.form }))));
+  return `
+    <section>
+      <h1>${esc(tt("references"))}</h1>
+      <p>${esc(tt("referencesIntro"))}</p>
+      <h2 class="sub-h">Texts</h2>
+      <ul class="refs">
+        <li>Bernard, A., &amp; Fernandez, A. D. (2012). Yoruba proverbs as cultural metaphor for understanding management in the Caribbean. <em>International Journal of Cross Cultural Management, 12</em>(3), 329–338. <a href="https://doi.org/10.1177/1470595812440154">https://doi.org/10.1177/1470595812440154</a></li>
+        <li>Brown, C. P. (1852; reprint 1979). <em>Dictionary, Telugu–English [Nighaṇṭu, Telugu Iṅglīṣ]</em>. New Delhi: Asian Educational Services. <a href="https://openlibrary.org/books/OL4245461M">Open Library record ↗</a></li>
+        <li>Dingemanse, M. (2015). Ideophones and reduplication: Depiction, description, and the interpretation of repeated talk in discourse. <em>Studies in Language, 39</em>(4), 946–970. <a href="https://doi.org/10.1075/sl.39.4.05din">https://doi.org/10.1075/sl.39.4.05din</a></li>
+        <li>Dingemanse, M. (2018). Redrawing the margins of language: Lessons from research on ideophones. <em>Glossa, 3</em>(1), 4. <a href="https://doi.org/10.5334/gjgl.444">https://doi.org/10.5334/gjgl.444</a></li>
+        <li>Lotven, S., &amp; Ajibade, M. (2024). Morphology in Gengbe and Yoruba ideophones. In C. R. Green &amp; S. Lotven (Eds.), <em>The Ghanaian linguistics nexus</em> (pp. 53–75). Language Science Press. <a href="https://doi.org/10.5281/zenodo.11091825">https://doi.org/10.5281/zenodo.11091825</a></li>
+        <li>Salami, Y. K. (2004). Yoruba proverbs and democratic ethos. <em>Proverbium, 21</em>, 315–328.</li>
+        <li>Yede, F., Akanmu, D., &amp; Mayadenu, A. A critical assessment of selected warning and advisory proverbs in Yoruba routine conversation (pp. 93–109).</li>
+        <li>Emeneau, M. B. (1969). Onomatopoetics in the Indian linguistic area. <em>Language, 45</em>(2), 274–299. <a href="https://doi.org/10.2307/411660">https://doi.org/10.2307/411660</a></li>
+        <li>Noss, P. A. (1999). The ideophone: A dilemma for translation and translation theory. In P. F. A. Kotey (Ed.), <em>New dimensions in African linguistics and languages</em> (pp. 261–272). Africa World Press.</li>
+        <li>Noss, P. A. (2003). Translating the ideophone: Perspectives and strategies of translators and artists. In A. E. Overvold et al. (Eds.), <em>The creative circle</em>. Africa World Press.</li>
+        <li>Vidal, O. E. (1852), foreword to Crowther’s Yorùbá dictionary, as quoted in Dingemanse (2018).</li>
+        <li>Westermann, D. (1927, 1937), as discussed in Dingemanse (2018).</li>
+        <li>Asiyanbola, A. A. (2002–2005). English-translated Yoruba proverbs associated with women: need for gender equality. <em>África, 24–26</em>, 247–264.</li>
+        <li>Duggirala, V. (2024). Telugu iconicity. <em>Iconicity in Language and Literature 17</em>. [record to add]</li>
+        <li>Chebanne, A. (2023). <em>Studies in African Linguistics, 52</em>, Supp. 13.</li>
+        <li>Hossain, A. (2026). Unsettled scripts. <em>Modern Languages Open</em>.</li>
+        <li>Roy-Campbell, Z. M. (2003). In <em>Black Linguistics</em>.</li>
+        <li>Akinbo, S. (2019), on Yorùbá tones on the talking drum.</li>
+        <li>A Telugu proverb collection (to verify before citation).</li>
+      </ul>
+      <h2 class="sub-h">Outside works</h2>
+      <p class="small">Each work links to its record. Works in copyright are linked, not embedded.</p>
+      <ul class="refs">
+        ${worksList.map(({ e, form }) => `<li>${esc(e.work)} <span class="small">· ${esc(form)} · <a href="${esc(e.record)}" rel="noopener" target="_blank">record ↗</a></span></li>`).join("")}
+      </ul>
+    </section>`;
+}
+
+function renderAbout() {
+  return `
+    <section>
+      <h1>${esc(tt("about"))}</h1>
+      <p class="quote" lang="en">${esc(tt("aboutQuote"))}</p>
+      <p class="small" lang="en">Westermann, quoted in Dingemanse (2018, p. 7).</p>
+      <h2 class="sub-h">Statement</h2>
+      <p>When you translate a word like Yorùbá káló or Telugu గలగల into English, a dictionary falls short of being able to describe a certain sentiment to native speakers. Dingemanse (2015) calls the difference description versus depiction. Ideophones are “more like poetic performances than prosaic descriptions” (p. 947).</p>
+      <p>So this site makes you hear before you read. Each word arrives as sound, then as its English equivalent, then as what that equivalent leaves out, in a speaker’s own words and in a piece of music, art or film that tries to carry some of it back.</p>
+      <p>Translation costs something, and the cost can be measured if you ask the right person. The English side of a dictionary entry is a decision, not a fact, and the people who can audit it are the ones who speak the language.</p>
+      <h2 class="sub-h">The readings and what each did</h2>
+      <ul class="refs">
+        <li><strong>Dingemanse (2015).</strong> The description/depiction split, and the idea that framing cues tell a listener which mode they are in. That is why every word plays before it is explained. The Nuckolls line on “cinematic renderings” (p. 952) gave me the idea to use film and movement.</li>
+        <li><strong>Dingemanse (2018).</strong> The history of the loss this project describes: Vidal’s 1852 observation about a separate adverb in each case (p. 5), Westermann’s “you have to see it” (p. 7), and the “pragmatic equivalence” warning (p. 19). It also gave me Westermann’s sound table, which I test openly.</li>
+        <li><strong>Lotven &amp; Ajibade (2024).</strong> The source of every Yorùbá form, tone mark and gloss. Its claim that ideophones behave “very much like other words” (p. 53).</li>
+        <li><strong>Salami (2004).</strong> The tone-less proverb that gave me Òwe lẹ́ṣin ọ̀rọ̀. Its warning about reading modern meanings into proverbs (p. 326) is why the “social knowledge” panel exists.</li>
+        <li><strong>Yede, Akanmu &amp; Mayadenu.</strong> The Yorùbá proverbs with tone marks. Yankah’s emphasis on context (p. 97) shaped the proverb template.</li>
+        <li><strong>Bernard &amp; Fernandez (2012).</strong> Richmond’s model gave me the “kept” end of the scale, and the authors’ caution about stereotypes (p. 330) shaped how each non-verbal piece is labeled.</li>
+        <li><strong>Chebanne (2023), Hossain (2026), Roy-Campbell (2003), Beyer (2020), Kutsch Lojenga (2018), Duggirala (2024), Bodomo (2006).</strong> Chebanne on how sound words are classed; Hossain on how standardization erases; Roy-Campbell on language carrying knowledge; Beyer and Kutsch Lojenga on iconicity and tone; Duggirala on Telugu iconicity; Bodomo, a native-speaker linguist of Dagaare named in Dingemanse (p. 17).</li>
+      </ul>
+      <h2 class="sub-h">Colors</h2>
+      <p>Yede et al. quote Achebe’s image of palm oil with which words are eaten (p. 94). The palette takes that image as its logic: the colors are food that carries meaning.</p>
+      <div class="palette-row">
+        <div style="background:#1f4a36;color:#f6eedc">forest green · the ground, and the leaf a meal is served on</div>
+        <div style="background:#d9a441">mustard · turmeric; marks the spoken word and the audio</div>
+        <div style="background:#c8542b;color:#f6eedc">red-orange · palm oil and chili; marks what the English leaves out</div>
+        <div style="background:#f6eedc">cream · the page; the English gloss, the written side</div>
+      </div>
+      <h2 class="sub-h">Method and credits</h2>
+      <p>Speakers: <strong>Ayomade Adeolu-Akande</strong> (Yorùbá) and <strong>Deepthi Medikondla</strong> (Telugu). Both confirmed the interpretations on their entries. The recordings, transcripts and non-verbal pieces are by the author. Each non-verbal piece is labeled “my attempt” and was reviewed by a native speaker.</p>
+      <p>Every Yorùbá and Telugu word, proverb and transcript is in its own script. Interface labels in Yorùbá and Telugu are drafts and should be checked by a native speaker.</p>
+      <p class="small">Limits, stated publicly: the scale is mine, not a standard. Westermann’s mappings are hypotheses. Speakers are individuals, not whole languages. The English definitions are my attempts.</p>
+    </section>`;
+}
+
+function renderNotFound() {
+  return `<section><h1>not found</h1><p><a href="#/index">${esc(tt("backIndex"))}</a></p></section>`;
+}
+
+/* =========================================================
+   ROUTER + CHROME
+   ========================================================= */
+function route() {
+  const hash = location.hash.replace(/^#\/?/, "");
+  const [a, b] = hash.split("/");
+  let html = "";
+  let navKey = "";
+  if (!a) { html = renderLanding(); }
+  else if (a === "index") { html = renderIndex(); navKey = "index"; }
+  else if (a === "term") { html = renderTerm(b); navKey = "index"; }
+  else if (a === "proverb") { html = renderProverb(b); navKey = "index"; }
+  else if (a === "scale") { html = renderScale(); navKey = "scale"; }
+  else if (a === "references") { html = renderReferences(); navKey = "references"; }
+  else if (a === "about") { html = renderAbout(); navKey = "about"; }
+  else { html = renderNotFound(); }
+
+  const app = document.getElementById("app");
+  app.innerHTML = html;
+  if (!a) bindLanding();
+  else if (a === "index") bindIndex();
+  else if (a === "term") wireAudio(app);
+  else if (a === "proverb") wireAudio(app);
+  document.querySelectorAll("nav.main a[data-nav]").forEach(el => {
+    if (el.dataset.nav === navKey) el.setAttribute("aria-current", "page"); else el.removeAttribute("aria-current");
+  });
+  app.focus({ preventScroll: true });
+  window.scrollTo({ top: 0, behavior: "auto" });
+}
+
+function applyChrome() {
+  document.documentElement.lang = currentLang;
+  document.querySelectorAll(".lang-switch button[data-lang]").forEach(b => {
+    b.setAttribute("aria-pressed", String(b.dataset.lang === currentLang));
+  });
+  document.querySelectorAll("nav.main a[data-nav]").forEach(a => { a.textContent = tt(a.dataset.nav); });
+  document.getElementById("circle-toggle").textContent = currentLang === "en" ? "all words" : (currentLang === "yo" ? "gbogbo ọ̀rọ̀" : "అన్ని పదాలు");
+  document.getElementById("lang-label").textContent = currentLang === "en" ? "LANGUAGE" : (currentLang === "yo" ? "ÈDÈ" : "భాష");
+  renderCircleMenu();
+}
+
+function renderCircleMenu() {
+  const items = TERMS.map(x => `<li><a href="#/term/${x.id}" lang="${esc(x.lang)}">${esc(x.form)}</a></li>`).join("")
+    + PROVERBS.map(x => `<li><a href="#/proverb/${x.id}" lang="${esc(x.lang)}">${esc(x.short)}</a></li>`).join("");
+  document.getElementById("circle-list").innerHTML = items;
+}
+
+document.querySelectorAll(".lang-switch button[data-lang]").forEach(b => {
+  b.addEventListener("click", () => {
+    currentLang = b.dataset.lang;
+    storage.set("what-survives-lang", currentLang);
+    applyChrome();
+    route();
+  });
+});
+
+const toggle = document.getElementById("circle-toggle");
+toggle.addEventListener("click", () => {
+  const menu = document.getElementById("circle-menu");
+  const open = !menu.classList.contains("open");
+  menu.classList.toggle("open", open);
+  toggle.setAttribute("aria-expanded", String(open));
+});
+
+window.addEventListener("hashchange", route);
+
+currentLang = storage.get("what-survives-lang") || "en";
+applyChrome();
+route();
+</script>
+</body>
+</html>
