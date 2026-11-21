@@ -649,7 +649,7 @@ function citeHtml(c) {
 function audioBlock(id, label) {
   return `
     <div class="audio-wrap" data-audio="${esc(id)}">
-      <audio controls preload="none" src="audio/${esc(id)}.mp3" aria-label="${esc(label)}"></audio>
+      <audio controls preload="none" src="audio/${esc(id)}.m4a" aria-label="${esc(label)}"></audio>
       <div class="pending-note" data-audio-status>${esc(tt("pending"))}</div>
     </div>`;
 }
