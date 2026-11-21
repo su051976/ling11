@@ -494,7 +494,7 @@ const TERMS = [
     ]
   },
   {
-    id: "y5", lang: "yo", room: "open", form: "gbangbakedere", forms: "gbangbakedere, from gbangba (“openness, especially a part of a building”) and kedere (“clearly”)",
+    id: "y5", noAudio: true, lang: "yo", room: "open", form: "gbangbakedere", forms: "gbangbakedere, from gbangba (“openness, especially a part of a building”) and kedere (“clearly”)",
     english: "“wide open” or “out in the open”",
     englishNote: "Lotven’s own definition, “It is no longer a secret,” drops the building and the opening image.",
     omits: "The building and opening image. Lotven’s definition drops it.",
@@ -640,7 +640,7 @@ function findTerm(id) { return TERMS.find(x => x.id === id); }
 function findProverb(id) { return PROVERBS.find(x => x.id === id); }
 function isTelugu(s) { return /[ఀ-౿]/.test(s); }
 function citeHtml(c) {
-  return typeof c === "string" ? esc(c) : `${esc(c.t)} <a href="${esc(c.href)}" rel="noopener">record ↗</a>`;
+  return typeof c === "string" ? esc(c) : `${esc(c.t)} <a href="${esc(c.href)}" rel="noopener">Link to Source ↗</a>`;
 }
 
 /* =========================================================
@@ -695,7 +695,7 @@ function renderWorks(list) {
       <p class="work-why">${esc(e.why)}</p>
       ${[].concat(e.embed || []).map(x => renderEmbed(x)).join("")}
       ${e.embed ? "" : `<p class="small">${esc(e.note || tt("noEmbed"))}</p>`}
-      <p class="small"><a href="${esc(e.record)}" rel="noopener" target="_blank">record ↗</a></p>
+      <p class="small"><a href="${esc(e.record)}" rel="noopener" target="_blank">Link to Source ↗</a></p>
     </li>`).join("")}</ul>`;
 }
 
@@ -703,7 +703,7 @@ function renderWorks(list) {
    LANDING
    ========================================================= */
 function renderLanding() {
-  const pool = TERMS.map(x => ({ ...x, english: x.english }))
+  const pool = TERMS.filter(x => !x.noAudio).map(x => ({ ...x, english: x.english }))
     .concat(PROVERBS.map(p => ({ ...p, english: p.intended })));
   const pick = pool[Math.floor(Math.random() * pool.length)];
   return `
@@ -887,13 +887,13 @@ function renderTerm(id) {
       <header class="term-head">
         <p class="mono">${esc(roomName(w.room))} · ${esc(w.id.toUpperCase())}</p>
         <h1 class="form-big" id="term-h" lang="${esc(w.lang)}">${esc(w.form)}</h1>
-        <p class="sub" lang="en">${esc(tt("listen"))}</p>
+        ${w.noAudio ? "" : `<p class="sub" lang="en">${esc(tt("listen"))}</p>`}
       </header>
 
       <section class="section" aria-labelledby="s1">
         <div class="label" id="s1">1 · ${esc(s[0])}</div>
         <div class="body">
-          ${audioBlock(w.id, w.form + " audio")}
+          ${w.noAudio ? "" : audioBlock(w.id, w.form + " audio")}
           <p class="transcript" lang="${esc(w.lang)}">${esc(w.forms)}</p>
           ${w.lang === "yo" ? `<p class="tone-legend">${esc(tt("toneLegend"))}</p>` : ""}
         </div>
@@ -1078,7 +1078,7 @@ function renderReferences() {
       <h2 class="sub-h">Outside works</h2>
       <p class="small">Each work links to its record. Works in copyright are linked, not embedded.</p>
       <ul class="refs">
-        ${worksList.map(({ e, form }) => `<li>${esc(e.work)} <span class="small">· ${esc(form)} · <a href="${esc(e.record)}" rel="noopener" target="_blank">record ↗</a></span></li>`).join("")}
+        ${worksList.map(({ e, form }) => `<li>${esc(e.work)} <span class="small">· ${esc(form)} · <a href="${esc(e.record)}" rel="noopener" target="_blank">Link to Source ↗</a></span></li>`).join("")}
       </ul>
     </section>`;
 }
